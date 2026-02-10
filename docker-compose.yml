@@ -1,0 +1,56 @@
+services:
+  db:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: schedule_kemsu
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d schedule_kemsu"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  migrate:
+    build: .
+    command: >
+      sh -c "npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all"
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: schedule_kemsu
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      NODE_ENV: development
+    depends_on:
+      db:
+        condition: service_healthy
+
+  app:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: schedule_kemsu
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      JWT_SECRET: kemsu_attendance_secret_key_2026
+      JWT_EXPIRES_IN: 24h
+      NODE_ENV: production
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+
+volumes:
+  pgdata:
