@@ -1,10 +1,13 @@
 import { Router } from 'express';
-import { getGroups, getWorkGroupsByBaseGroup } from '../controllers/groupController';
+import { getGroups, getGroupById, createGroup, updateGroup, deleteGroup } from '../controllers/groupController';
 import { auth } from '../middleware/auth';
 
 const router = Router();
 
 router.get('/', auth, getGroups);
-router.get('/:baseGroupId/work-groups', auth, getWorkGroupsByBaseGroup);
+router.get('/:id', auth, getGroupById);
+router.post('/', auth, createGroup);
+router.put('/:id', auth, updateGroup);
+router.delete('/:id', auth, deleteGroup);
 
 export default router;

@@ -24,19 +24,3 @@ export const auth = (req: AuthRequest, _res: Response, next: NextFunction): void
     next(new AppError('Невалидный токен', 401));
   }
 };
-
-export const roles = (...allowedRoles: string[]) => {
-  return (req: AuthRequest, _res: Response, next: NextFunction): void => {
-    if (!req.user) {
-      next(new AppError('Не авторизован', 401));
-      return;
-    }
-
-    if (!allowedRoles.includes(req.user.role)) {
-      next(new AppError('Недостаточно прав', 403));
-      return;
-    }
-
-    next();
-  };
-};

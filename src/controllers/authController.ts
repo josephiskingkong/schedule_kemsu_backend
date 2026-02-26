@@ -5,7 +5,6 @@ import config from '../config';
 import { AuthRequest, JwtPayload } from '../types';
 import { AppError } from '../utils/AppError';
 import Lecturer from '../models/Lecturer';
-import Department from '../models/Department';
 
 export const login = async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
@@ -29,8 +28,7 @@ export const login = async (req: AuthRequest, res: Response, next: NextFunction)
 
     const payload: JwtPayload = {
       id: lecturer.id,
-      login: lecturer.login,
-      role: lecturer.role
+      login: lecturer.login
     };
 
     const token = jwt.sign(payload, config.jwt.secret, {
@@ -46,9 +44,7 @@ export const login = async (req: AuthRequest, res: Response, next: NextFunction)
           first_name: lecturer.first_name,
           last_name: lecturer.last_name,
           middle_name: lecturer.middle_name,
-          login: lecturer.login,
-          role: lecturer.role,
-          department_id: lecturer.department_id
+          login: lecturer.login
         }
       }
     });
@@ -64,8 +60,7 @@ export const getProfile = async (req: AuthRequest, res: Response, next: NextFunc
     }
 
     const lecturer = await Lecturer.findByPk(req.user.id, {
-      attributes: { exclude: ['password'] },
-      include: [{ model: Department }]
+      attributes: { exclude: ['password'] }
     });
 
     if (!lecturer) {

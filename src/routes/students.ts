@@ -1,10 +1,12 @@
 import { Router } from 'express';
-import { getStudentsByWorkGroup, getStudentsByBaseGroup } from '../controllers/studentController';
+import { getStudentsByGroup, addStudent, updateStudent, deleteStudent } from '../controllers/studentController';
 import { auth } from '../middleware/auth';
 
 const router = Router();
 
-router.get('/work-group/:workGroupId', auth, getStudentsByWorkGroup);
-router.get('/base-group/:baseGroupId', auth, getStudentsByBaseGroup);
+router.get('/group/:groupId', auth, getStudentsByGroup);
+router.post('/', auth, addStudent);
+router.put('/:id', auth, updateStudent);
+router.delete('/:id', auth, deleteStudent);
 
 export default router;

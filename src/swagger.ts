@@ -5,26 +5,13 @@ const options: swaggerJsdoc.Options = {
     openapi: '3.0.0',
     info: {
       title: 'Schedule KEMSU API',
-      version: '1.0.0',
-      description: 'API для системы учёта посещаемости студентов КемГУ',
-      contact: {
-        name: 'КемГУ'
-      }
+      version: '2.0.0',
+      description: 'API для системы учёта посещаемости студентов КемГУ'
     },
-    servers: [
-      {
-        url: '/api',
-        description: 'API сервер'
-      }
-    ],
+    servers: [{ url: '/api', description: 'API сервер' }],
     components: {
       securitySchemes: {
-        bearerAuth: {
-          type: 'http',
-          scheme: 'bearer',
-          bearerFormat: 'JWT',
-          description: 'JWT токен авторизации. Получите через POST /auth/login'
-        }
+        bearerAuth: { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' }
       },
       schemas: {
         Error: {
@@ -45,26 +32,23 @@ const options: swaggerJsdoc.Options = {
         LoginResponse: {
           type: 'object',
           properties: {
-            success: { type: 'boolean', example: true },
+            success: { type: 'boolean' },
             data: {
               type: 'object',
               properties: {
-                token: { type: 'string', example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...' },
-                user: { $ref: '#/components/schemas/LecturerShort' }
+                token: { type: 'string' },
+                user: {
+                  type: 'object',
+                  properties: {
+                    id: { type: 'integer' },
+                    first_name: { type: 'string' },
+                    last_name: { type: 'string' },
+                    middle_name: { type: 'string' },
+                    login: { type: 'string' }
+                  }
+                }
               }
             }
-          }
-        },
-        LecturerShort: {
-          type: 'object',
-          properties: {
-            id: { type: 'integer', example: 1 },
-            first_name: { type: 'string', example: 'Иван' },
-            last_name: { type: 'string', example: 'Петров' },
-            middle_name: { type: 'string', example: 'Сергеевич' },
-            login: { type: 'string', example: 'petrov@kemsu.ru' },
-            role: { type: 'string', enum: ['lecturer', 'head_of_department'], example: 'lecturer' },
-            department_id: { type: 'integer', example: 1 }
           }
         },
         LecturerProfile: {
@@ -74,345 +58,138 @@ const options: swaggerJsdoc.Options = {
             first_name: { type: 'string' },
             last_name: { type: 'string' },
             middle_name: { type: 'string' },
-            login: { type: 'string' },
-            role: { type: 'string', enum: ['lecturer', 'head_of_department'] },
-            department_id: { type: 'integer' },
-            department: { $ref: '#/components/schemas/Department' }
-          }
-        },
-        Department: {
-          type: 'object',
-          properties: {
-            id: { type: 'integer', example: 1 },
-            short_name: { type: 'string', example: 'ИВТ' },
-            full_name: { type: 'string', example: 'Кафедра информатики и вычислительной техники' },
-            faculty_id: { type: 'integer', example: 1 }
-          }
-        },
-        BaseGroup: {
-          type: 'object',
-          properties: {
-            id: { type: 'integer', example: 1 },
-            name: { type: 'string', example: 'ПМИ-21' },
-            intake_year: { type: 'integer', example: 2021 },
-            course_number: { type: 'integer', example: 4 },
-            track: { $ref: '#/components/schemas/Track' },
-            workGroups: {
-              type: 'array',
-              items: { $ref: '#/components/schemas/WorkGroupShort' }
-            }
-          }
-        },
-        Track: {
-          type: 'object',
-          properties: {
-            id: { type: 'integer', example: 1 },
-            name: { type: 'string', example: 'Системное программирование' },
-            specialty_id: { type: 'integer', example: 1 },
-            specialty: { $ref: '#/components/schemas/Specialty' }
-          }
-        },
-        Specialty: {
-          type: 'object',
-          properties: {
-            id: { type: 'integer', example: 1 },
-            name: { type: 'string', example: 'Прикладная математика и информатика' }
-          }
-        },
-        WorkGroupShort: {
-          type: 'object',
-          properties: {
-            id: { type: 'integer', example: 1 },
-            name: { type: 'string', example: 'ПМИ-21 (подгруппа 1)' },
-            comment: { type: 'string', nullable: true, example: 'Первая подгруппа' }
-          }
-        },
-        WorkGroupWithPlans: {
-          type: 'object',
-          properties: {
-            id: { type: 'integer' },
-            base_group_id: { type: 'integer' },
-            name: { type: 'string' },
-            comment: { type: 'string', nullable: true },
-            disciplinePlans: {
-              type: 'array',
-              items: { $ref: '#/components/schemas/DisciplinePlanShort' }
-            }
+            login: { type: 'string' }
           }
         },
         Student: {
           type: 'object',
           properties: {
-            id: { type: 'integer', example: 1 },
-            first_name: { type: 'string', example: 'Анна' },
-            last_name: { type: 'string', example: 'Иванова' },
-            middle_name: { type: 'string', nullable: true, example: 'Петровна' },
-            date_birth: { type: 'string', format: 'date', example: '2003-05-15' },
-            age: { type: 'integer', example: 22 }
+            id: { type: 'integer' },
+            first_name: { type: 'string' },
+            last_name: { type: 'string' },
+            middle_name: { type: 'string' },
+            photo: { type: 'string', nullable: true },
+            group_id: { type: 'integer' },
+            subgroup: { type: 'integer', nullable: true }
           }
         },
-        DisciplinePlanShort: {
+        CreateStudentRequest: {
+          type: 'object',
+          required: ['first_name', 'last_name', 'group_id'],
+          properties: {
+            first_name: { type: 'string' },
+            last_name: { type: 'string' },
+            middle_name: { type: 'string' },
+            photo: { type: 'string' },
+            group_id: { type: 'integer' },
+            subgroup: { type: 'integer' }
+          }
+        },
+        UpdateStudentRequest: {
+          type: 'object',
+          properties: {
+            first_name: { type: 'string' },
+            last_name: { type: 'string' },
+            middle_name: { type: 'string' },
+            photo: { type: 'string' },
+            group_id: { type: 'integer' },
+            subgroup: { type: 'integer', nullable: true }
+          }
+        },
+        Group: {
           type: 'object',
           properties: {
             id: { type: 'integer' },
-            lecturer_id: { type: 'integer' },
-            work_group_id: { type: 'integer' },
-            discipline_id: { type: 'integer' },
-            activity_type_id: { type: 'integer' },
-            academic_year_id: { type: 'integer' },
-            academic_hours: { type: 'integer' },
-            discipline: { $ref: '#/components/schemas/Discipline' },
-            activityType: { $ref: '#/components/schemas/ActivityType' }
+            name: { type: 'string', example: 'ПИ-221' },
+            students: { type: 'array', items: { $ref: '#/components/schemas/Student' } }
           }
         },
-        DisciplinePlanFull: {
+        CreateGroupRequest: {
           type: 'object',
+          required: ['name'],
           properties: {
-            id: { type: 'integer' },
-            lecturer_id: { type: 'integer' },
-            work_group_id: { type: 'integer' },
-            discipline_id: { type: 'integer' },
-            activity_type_id: { type: 'integer' },
-            academic_year_id: { type: 'integer' },
-            academic_hours: { type: 'integer' },
-            discipline: { $ref: '#/components/schemas/Discipline' },
-            activityType: { $ref: '#/components/schemas/ActivityType' },
-            lecturer: {
-              type: 'object',
-              properties: {
-                id: { type: 'integer' },
-                first_name: { type: 'string' },
-                last_name: { type: 'string' },
-                middle_name: { type: 'string' }
-              }
-            },
-            workGroup: {
-              type: 'object',
-              properties: {
-                id: { type: 'integer' },
-                base_group_id: { type: 'integer' },
-                name: { type: 'string' },
-                comment: { type: 'string', nullable: true },
-                baseGroup: {
-                  type: 'object',
-                  properties: {
-                    id: { type: 'integer' },
-                    name: { type: 'string' },
-                    intake_year: { type: 'integer' },
-                    course_number: { type: 'integer' },
-                    track_id: { type: 'integer' }
-                  }
+            name: { type: 'string', example: 'ПИ-221' },
+            students: {
+              type: 'array',
+              items: {
+                type: 'object',
+                required: ['first_name', 'last_name'],
+                properties: {
+                  first_name: { type: 'string' },
+                  last_name: { type: 'string' },
+                  middle_name: { type: 'string' },
+                  photo: { type: 'string' },
+                  subgroup: { type: 'integer' }
                 }
               }
-            },
-            sessions: {
-              type: 'array',
-              items: { $ref: '#/components/schemas/AttendanceSessionWithClassroom' }
             }
           }
         },
-        Discipline: {
+        UpdateGroupRequest: {
           type: 'object',
-          properties: {
-            id: { type: 'integer', example: 1 },
-            name: { type: 'string', example: 'Базы данных' }
-          }
+          properties: { name: { type: 'string' } }
         },
-        ActivityType: {
-          type: 'object',
-          properties: {
-            id: { type: 'integer', example: 1 },
-            short_name: { type: 'string', example: 'Лек' },
-            full_name: { type: 'string', example: 'Лекция' }
-          }
-        },
-        AttendanceSession: {
-          type: 'object',
-          properties: {
-            id: { type: 'integer', example: 1 },
-            discipline_plan_id: { type: 'integer', example: 1 },
-            date: { type: 'string', format: 'date', example: '2026-02-02' },
-            pair_number: { type: 'integer', nullable: true, example: 1 },
-            classroom_id: { type: 'integer', nullable: true, example: 1 }
-          }
-        },
-        AttendanceSessionWithClassroom: {
+        GroupShort: {
           type: 'object',
           properties: {
             id: { type: 'integer' },
-            discipline_plan_id: { type: 'integer' },
-            date: { type: 'string', format: 'date' },
-            pair_number: { type: 'integer', nullable: true },
-            classroom_id: { type: 'integer', nullable: true },
-            classroom: { $ref: '#/components/schemas/Classroom' }
+            name: { type: 'string' }
           }
         },
-        AttendanceStatus: {
+        Lesson: {
           type: 'object',
           properties: {
-            id: { type: 'integer', example: 1 },
-            name: { type: 'string', example: 'Присутствует' },
-            comment: { type: 'string', nullable: true }
+            id: { type: 'integer' },
+            group_id: { type: 'integer' },
+            subject_name: { type: 'string' },
+            subgroup: { type: 'integer', nullable: true },
+            academic_hours: { type: 'integer', nullable: true },
+            lecturer_id: { type: 'integer' },
+            group: { $ref: '#/components/schemas/GroupShort' },
+            attendances: { type: 'array', items: { $ref: '#/components/schemas/AttendanceWithStudent' } }
           }
         },
-        Classroom: {
+        CreateLessonRequest: {
           type: 'object',
+          required: ['group_id', 'subject_name'],
           properties: {
-            id: { type: 'integer', example: 1 },
-            name: { type: 'string', example: '301а' }
+            group_id: { type: 'integer' },
+            subject_name: { type: 'string', example: 'Программирование на Python' },
+            subgroup: { type: 'integer', description: 'null=вся группа, 1/2/3=подгруппа' },
+            academic_hours: { type: 'integer' }
           }
         },
         Attendance: {
           type: 'object',
           properties: {
             id: { type: 'integer' },
+            lesson_id: { type: 'integer' },
             student_id: { type: 'integer' },
-            attendance_session_id: { type: 'integer' },
-            attendance_status_id: { type: 'integer' },
-            attendance_timestamp: { type: 'string', format: 'date-time' },
-            comment: { type: 'string', nullable: true }
+            status: { type: 'string', enum: ['present', 'absent', 'late', 'excused'] }
           }
         },
-        CreateSessionRequest: {
+        AttendanceWithStudent: {
           type: 'object',
-          required: ['discipline_plan_id', 'date'],
           properties: {
-            discipline_plan_id: { type: 'integer', example: 1 },
-            date: { type: 'string', format: 'date', example: '2026-02-10' },
-            pair_number: { type: 'integer', nullable: true, example: 2 },
-            classroom_id: { type: 'integer', nullable: true, example: 1 }
+            id: { type: 'integer' },
+            lesson_id: { type: 'integer' },
+            student_id: { type: 'integer' },
+            status: { type: 'string', enum: ['present', 'absent', 'late', 'excused'] },
+            student: { $ref: '#/components/schemas/Student' }
           }
         },
-        MarkAttendanceRequest: {
+        UpdateAttendanceRequest: {
           type: 'object',
-          required: ['records'],
+          required: ['status'],
           properties: {
-            records: {
-              type: 'array',
-              items: {
-                type: 'object',
-                required: ['student_id', 'attendance_status_id'],
-                properties: {
-                  student_id: { type: 'integer', example: 1 },
-                  attendance_status_id: { type: 'integer', example: 1 },
-                  comment: { type: 'string', nullable: true, example: '' }
-                }
-              }
-            }
+            status: { type: 'string', enum: ['present', 'absent', 'late', 'excused'] }
           }
         },
-        SessionAttendanceItem: {
+        AttendanceStatusItem: {
           type: 'object',
           properties: {
-            student: {
-              type: 'object',
-              properties: {
-                id: { type: 'integer' },
-                first_name: { type: 'string' },
-                last_name: { type: 'string' },
-                middle_name: { type: 'string' }
-              }
-            },
-            attendance: {
-              nullable: true,
-              type: 'object',
-              properties: {
-                id: { type: 'integer' },
-                student_id: { type: 'integer' },
-                attendance_session_id: { type: 'integer' },
-                attendance_status_id: { type: 'integer' },
-                attendance_timestamp: { type: 'string', format: 'date-time' },
-                comment: { type: 'string', nullable: true },
-                attendanceStatus: { $ref: '#/components/schemas/AttendanceStatus' }
-              }
-            }
-          }
-        },
-        StatsSummaryItem: {
-          type: 'object',
-          properties: {
-            discipline_plan_id: { type: 'integer' },
-            discipline: { type: 'string', example: 'Базы данных' },
-            activity_type: { type: 'string', example: 'Лаб' },
-            work_group: { type: 'string', example: 'ПМИ-21 (подгруппа 1)' },
-            base_group: { type: 'string', example: 'ПМИ-21' },
-            total_sessions: { type: 'integer', example: 3 },
-            academic_hours: { type: 'integer', example: 36 }
-          }
-        },
-        DisciplinePlanStats: {
-          type: 'object',
-          properties: {
-            discipline_plan: {
-              type: 'object',
-              properties: {
-                id: { type: 'integer' },
-                discipline: { $ref: '#/components/schemas/Discipline' },
-                activity_type: { $ref: '#/components/schemas/ActivityType' },
-                work_group: {
-                  type: 'object',
-                  properties: {
-                    id: { type: 'integer' },
-                    name: { type: 'string' },
-                    baseGroup: {
-                      type: 'object',
-                      properties: {
-                        id: { type: 'integer' },
-                        name: { type: 'string' }
-                      }
-                    }
-                  }
-                }
-              }
-            },
-            total_sessions: { type: 'integer' },
-            students: {
-              type: 'array',
-              items: {
-                type: 'object',
-                properties: {
-                  student: {
-                    type: 'object',
-                    properties: {
-                      id: { type: 'integer' },
-                      last_name: { type: 'string' },
-                      first_name: { type: 'string' },
-                      middle_name: { type: 'string' }
-                    }
-                  },
-                  total_sessions: { type: 'integer' },
-                  total_marked: { type: 'integer' },
-                  status_counts: {
-                    type: 'object',
-                    additionalProperties: { type: 'integer' },
-                    example: { 'Присутствует': 5, 'Отсутствует': 1, 'Уважительная': 0, 'Опоздание': 1 }
-                  }
-                }
-              }
-            }
-          }
-        },
-        StudentStats: {
-          type: 'object',
-          properties: {
-            student: {
-              type: 'object',
-              properties: {
-                id: { type: 'integer' },
-                last_name: { type: 'string' },
-                first_name: { type: 'string' },
-                middle_name: { type: 'string' }
-              }
-            },
-            total_records: { type: 'integer' },
-            status_counts: {
-              type: 'object',
-              additionalProperties: { type: 'integer' }
-            },
-            details: {
-              type: 'array',
-              items: { $ref: '#/components/schemas/Attendance' }
-            }
+            value: { type: 'string' },
+            label: { type: 'string' }
           }
         }
       }
@@ -421,692 +198,154 @@ const options: swaggerJsdoc.Options = {
       '/auth/login': {
         post: {
           tags: ['Авторизация'],
-          summary: 'Авторизация пользователя',
-          description: 'Аутентификация преподавателя по логину и паролю. Возвращает JWT-токен.',
-          requestBody: {
-            required: true,
-            content: {
-              'application/json': {
-                schema: { $ref: '#/components/schemas/LoginRequest' }
-              }
-            }
-          },
+          summary: 'Вход в систему',
+          requestBody: { required: true, content: { 'application/json': { schema: { $ref: '#/components/schemas/LoginRequest' } } } },
           responses: {
-            '200': {
-              description: 'Успешная авторизация',
-              content: {
-                'application/json': {
-                  schema: { $ref: '#/components/schemas/LoginResponse' }
-                }
-              }
-            },
-            '400': {
-              description: 'Логин и пароль обязательны',
-              content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } }
-            },
-            '401': {
-              description: 'Неверный логин или пароль',
-              content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } }
-            }
+            '200': { description: 'Успешный вход', content: { 'application/json': { schema: { $ref: '#/components/schemas/LoginResponse' } } } },
+            '401': { description: 'Неверный логин или пароль' }
           }
         }
       },
       '/auth/profile': {
         get: {
           tags: ['Авторизация'],
-          summary: 'Получить профиль текущего пользователя',
-          description: 'Возвращает данные авторизованного преподавателя с информацией о кафедре.',
+          summary: 'Профиль текущего пользователя',
           security: [{ bearerAuth: [] }],
           responses: {
-            '200': {
-              description: 'Профиль пользователя',
-              content: {
-                'application/json': {
-                  schema: {
-                    type: 'object',
-                    properties: {
-                      success: { type: 'boolean', example: true },
-                      data: { $ref: '#/components/schemas/LecturerProfile' }
-                    }
-                  }
-                }
-              }
-            },
-            '401': {
-              description: 'Не авторизован',
-              content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } }
-            }
+            '200': { description: 'Профиль', content: { 'application/json': { schema: { type: 'object', properties: { success: { type: 'boolean' }, data: { $ref: '#/components/schemas/LecturerProfile' } } } } } }
           }
         }
       },
       '/groups': {
         get: {
           tags: ['Группы'],
-          summary: 'Получить список групп',
-          description: 'Преподаватель видит только группы, для которых у него есть планы дисциплин. Заведующий кафедрой видит все группы.',
+          summary: 'Все группы со студентами',
           security: [{ bearerAuth: [] }],
-          responses: {
-            '200': {
-              description: 'Список базовых групп с подгруппами',
-              content: {
-                'application/json': {
-                  schema: {
-                    type: 'object',
-                    properties: {
-                      success: { type: 'boolean', example: true },
-                      data: {
-                        type: 'array',
-                        items: { $ref: '#/components/schemas/BaseGroup' }
-                      }
-                    }
-                  }
-                }
-              }
-            },
-            '401': {
-              description: 'Не авторизован',
-              content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } }
-            }
-          }
+          responses: { '200': { description: 'Список групп' } }
+        },
+        post: {
+          tags: ['Группы'],
+          summary: 'Создать группу с опциональным списком студентов',
+          security: [{ bearerAuth: [] }],
+          requestBody: { required: true, content: { 'application/json': { schema: { $ref: '#/components/schemas/CreateGroupRequest' } } } },
+          responses: { '201': { description: 'Группа создана' }, '409': { description: 'Группа уже существует' } }
         }
       },
-      '/groups/{baseGroupId}/work-groups': {
+      '/groups/{id}': {
         get: {
           tags: ['Группы'],
-          summary: 'Получить подгруппы базовой группы',
-          description: 'Возвращает рабочие подгруппы с привязанными планами дисциплин. Преподаватель видит только свои планы.',
+          summary: 'Группа по ID',
           security: [{ bearerAuth: [] }],
-          parameters: [
-            {
-              name: 'baseGroupId',
-              in: 'path',
-              required: true,
-              schema: { type: 'integer' },
-              description: 'ID базовой группы'
-            }
-          ],
-          responses: {
-            '200': {
-              description: 'Список подгрупп с планами дисциплин',
-              content: {
-                'application/json': {
-                  schema: {
-                    type: 'object',
-                    properties: {
-                      success: { type: 'boolean', example: true },
-                      data: {
-                        type: 'array',
-                        items: { $ref: '#/components/schemas/WorkGroupWithPlans' }
-                      }
-                    }
-                  }
-                }
-              }
-            },
-            '401': {
-              description: 'Не авторизован',
-              content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } }
-            }
-          }
+          parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'integer' } }],
+          responses: { '200': { description: 'Группа' }, '404': { description: 'Не найдена' } }
+        },
+        put: {
+          tags: ['Группы'],
+          summary: 'Обновить название группы',
+          security: [{ bearerAuth: [] }],
+          parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'integer' } }],
+          requestBody: { required: true, content: { 'application/json': { schema: { $ref: '#/components/schemas/UpdateGroupRequest' } } } },
+          responses: { '200': { description: 'Обновлена' }, '404': { description: 'Не найдена' } }
+        },
+        delete: {
+          tags: ['Группы'],
+          summary: 'Удалить группу',
+          security: [{ bearerAuth: [] }],
+          parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'integer' } }],
+          responses: { '200': { description: 'Удалена' }, '404': { description: 'Не найдена' } }
         }
       },
-      '/students/work-group/{workGroupId}': {
+      '/students/group/{groupId}': {
         get: {
           tags: ['Студенты'],
-          summary: 'Студенты рабочей подгруппы',
-          description: 'Возвращает список студентов, записанных в указанную рабочую подгруппу в текущем учебном году.',
+          summary: 'Студенты группы (фильтр по подгруппе)',
           security: [{ bearerAuth: [] }],
           parameters: [
-            {
-              name: 'workGroupId',
-              in: 'path',
-              required: true,
-              schema: { type: 'integer' },
-              description: 'ID рабочей подгруппы'
-            }
+            { name: 'groupId', in: 'path', required: true, schema: { type: 'integer' } },
+            { name: 'subgroup', in: 'query', required: false, schema: { type: 'integer' }, description: '1, 2 или 3' }
           ],
-          responses: {
-            '200': {
-              description: 'Список студентов',
-              content: {
-                'application/json': {
-                  schema: {
-                    type: 'object',
-                    properties: {
-                      success: { type: 'boolean', example: true },
-                      data: {
-                        type: 'array',
-                        items: { $ref: '#/components/schemas/Student' }
-                      }
-                    }
-                  }
-                }
-              }
-            },
-            '401': {
-              description: 'Не авторизован',
-              content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } }
-            }
-          }
+          responses: { '200': { description: 'Список студентов' } }
         }
       },
-      '/students/base-group/{baseGroupId}': {
-        get: {
+      '/students': {
+        post: {
           tags: ['Студенты'],
-          summary: 'Студенты базовой группы',
-          description: 'Возвращает всех студентов, принадлежащих к указанной базовой группе.',
+          summary: 'Добавить студента',
           security: [{ bearerAuth: [] }],
-          parameters: [
-            {
-              name: 'baseGroupId',
-              in: 'path',
-              required: true,
-              schema: { type: 'integer' },
-              description: 'ID базовой группы'
-            }
-          ],
-          responses: {
-            '200': {
-              description: 'Список студентов',
-              content: {
-                'application/json': {
-                  schema: {
-                    type: 'object',
-                    properties: {
-                      success: { type: 'boolean', example: true },
-                      data: {
-                        type: 'array',
-                        items: { $ref: '#/components/schemas/Student' }
-                      }
-                    }
-                  }
-                }
-              }
-            },
-            '401': {
-              description: 'Не авторизован',
-              content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } }
-            }
-          }
+          requestBody: { required: true, content: { 'application/json': { schema: { $ref: '#/components/schemas/CreateStudentRequest' } } } },
+          responses: { '201': { description: 'Студент добавлен' }, '400': { description: 'Ошибка валидации' } }
         }
       },
-      '/schedule': {
-        get: {
-          tags: ['Расписание'],
-          summary: 'Получить расписание',
-          description: 'Возвращает планы дисциплин с сессиями. Преподаватель видит только свои. Заведующий кафедрой — все. Можно фильтровать по датам.',
+      '/students/{id}': {
+        put: {
+          tags: ['Студенты'],
+          summary: 'Обновить студента',
           security: [{ bearerAuth: [] }],
-          parameters: [
-            {
-              name: 'date_from',
-              in: 'query',
-              required: false,
-              schema: { type: 'string', format: 'date' },
-              description: 'Начало диапазона дат (включительно)'
-            },
-            {
-              name: 'date_to',
-              in: 'query',
-              required: false,
-              schema: { type: 'string', format: 'date' },
-              description: 'Конец диапазона дат (включительно)'
-            }
-          ],
-          responses: {
-            '200': {
-              description: 'Список планов с сессиями',
-              content: {
-                'application/json': {
-                  schema: {
-                    type: 'object',
-                    properties: {
-                      success: { type: 'boolean', example: true },
-                      data: {
-                        type: 'array',
-                        items: { $ref: '#/components/schemas/DisciplinePlanFull' }
-                      }
-                    }
-                  }
-                }
-              }
-            },
-            '401': {
-              description: 'Не авторизован',
-              content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } }
-            }
-          }
+          parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'integer' } }],
+          requestBody: { required: true, content: { 'application/json': { schema: { $ref: '#/components/schemas/UpdateStudentRequest' } } } },
+          responses: { '200': { description: 'Обновлён' }, '404': { description: 'Не найден' } }
+        },
+        delete: {
+          tags: ['Студенты'],
+          summary: 'Удалить студента',
+          security: [{ bearerAuth: [] }],
+          parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'integer' } }],
+          responses: { '200': { description: 'Удалён' }, '404': { description: 'Не найден' } }
         }
       },
-      '/schedule/disciplines': {
+      '/lessons': {
         get: {
-          tags: ['Расписание'],
-          summary: 'Получить дисциплины',
-          description: 'Возвращает планы дисциплин без сессий. Преподаватель — только свои, заведующий — все.',
+          tags: ['Занятия'],
+          summary: 'Мои занятия',
           security: [{ bearerAuth: [] }],
-          responses: {
-            '200': {
-              description: 'Список планов дисциплин',
-              content: {
-                'application/json': {
-                  schema: {
-                    type: 'object',
-                    properties: {
-                      success: { type: 'boolean', example: true },
-                      data: {
-                        type: 'array',
-                        items: { $ref: '#/components/schemas/DisciplinePlanFull' }
-                      }
-                    }
-                  }
-                }
-              }
-            },
-            '401': {
-              description: 'Не авторизован',
-              content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } }
-            }
-          }
+          responses: { '200': { description: 'Список занятий' } }
+        },
+        post: {
+          tags: ['Занятия'],
+          summary: 'Создать занятие (авто-создание записей посещаемости)',
+          security: [{ bearerAuth: [] }],
+          requestBody: { required: true, content: { 'application/json': { schema: { $ref: '#/components/schemas/CreateLessonRequest' } } } },
+          responses: { '201': { description: 'Занятие создано' }, '400': { description: 'Ошибка валидации' }, '404': { description: 'Группа не найдена' } }
         }
       },
-      '/schedule/discipline-plan/{disciplinePlanId}/sessions': {
+      '/lessons/{id}': {
         get: {
-          tags: ['Расписание'],
-          summary: 'Сессии плана дисциплины',
-          description: 'Возвращает все сессии (занятия) для указанного плана дисциплины с информацией об аудиториях.',
+          tags: ['Занятия'],
+          summary: 'Занятие с посещаемостью',
           security: [{ bearerAuth: [] }],
-          parameters: [
-            {
-              name: 'disciplinePlanId',
-              in: 'path',
-              required: true,
-              schema: { type: 'integer' },
-              description: 'ID плана дисциплины'
-            }
-          ],
-          responses: {
-            '200': {
-              description: 'Список сессий',
-              content: {
-                'application/json': {
-                  schema: {
-                    type: 'object',
-                    properties: {
-                      success: { type: 'boolean', example: true },
-                      data: {
-                        type: 'array',
-                        items: { $ref: '#/components/schemas/AttendanceSessionWithClassroom' }
-                      }
-                    }
-                  }
-                }
-              }
-            },
-            '401': {
-              description: 'Не авторизован',
-              content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } }
-            },
-            '403': {
-              description: 'Нет доступа к этому плану',
-              content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } }
-            },
-            '404': {
-              description: 'План дисциплины не найден',
-              content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } }
-            }
-          }
+          parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'integer' } }],
+          responses: { '200': { description: 'Занятие' }, '404': { description: 'Не найдено' } }
+        },
+        delete: {
+          tags: ['Занятия'],
+          summary: 'Удалить занятие',
+          security: [{ bearerAuth: [] }],
+          parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'integer' } }],
+          responses: { '200': { description: 'Удалено' }, '404': { description: 'Не найдено' } }
+        }
+      },
+      '/attendance/{id}': {
+        put: {
+          tags: ['Посещаемость'],
+          summary: 'Изменить статус посещаемости',
+          security: [{ bearerAuth: [] }],
+          parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'integer' } }],
+          requestBody: { required: true, content: { 'application/json': { schema: { $ref: '#/components/schemas/UpdateAttendanceRequest' } } } },
+          responses: { '200': { description: 'Обновлён' }, '400': { description: 'Невалидный статус' }, '404': { description: 'Не найдена' } }
         }
       },
       '/attendance/statuses': {
         get: {
           tags: ['Посещаемость'],
-          summary: 'Получить статусы посещаемости',
-          description: 'Возвращает все доступные статусы посещаемости (Присутствует, Отсутствует, Уважительная, Опоздание).',
+          summary: 'Список статусов посещаемости',
           security: [{ bearerAuth: [] }],
-          responses: {
-            '200': {
-              description: 'Список статусов',
-              content: {
-                'application/json': {
-                  schema: {
-                    type: 'object',
-                    properties: {
-                      success: { type: 'boolean', example: true },
-                      data: {
-                        type: 'array',
-                        items: { $ref: '#/components/schemas/AttendanceStatus' }
-                      }
-                    }
-                  }
-                }
-              }
-            },
-            '401': {
-              description: 'Не авторизован',
-              content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } }
-            }
-          }
-        }
-      },
-      '/attendance/classrooms': {
-        get: {
-          tags: ['Посещаемость'],
-          summary: 'Получить список аудиторий',
-          description: 'Возвращает все аудитории, отсортированные по названию.',
-          security: [{ bearerAuth: [] }],
-          responses: {
-            '200': {
-              description: 'Список аудиторий',
-              content: {
-                'application/json': {
-                  schema: {
-                    type: 'object',
-                    properties: {
-                      success: { type: 'boolean', example: true },
-                      data: {
-                        type: 'array',
-                        items: { $ref: '#/components/schemas/Classroom' }
-                      }
-                    }
-                  }
-                }
-              }
-            },
-            '401': {
-              description: 'Не авторизован',
-              content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } }
-            }
-          }
-        }
-      },
-      '/attendance/sessions': {
-        post: {
-          tags: ['Посещаемость'],
-          summary: 'Создать сессию посещаемости',
-          description: 'Создаёт новую сессию (занятие) для плана дисциплины. Преподаватель может создать только для своего плана.',
-          security: [{ bearerAuth: [] }],
-          requestBody: {
-            required: true,
-            content: {
-              'application/json': {
-                schema: { $ref: '#/components/schemas/CreateSessionRequest' }
-              }
-            }
-          },
-          responses: {
-            '201': {
-              description: 'Сессия создана',
-              content: {
-                'application/json': {
-                  schema: {
-                    type: 'object',
-                    properties: {
-                      success: { type: 'boolean', example: true },
-                      data: { $ref: '#/components/schemas/AttendanceSession' }
-                    }
-                  }
-                }
-              }
-            },
-            '401': {
-              description: 'Не авторизован',
-              content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } }
-            },
-            '403': {
-              description: 'Нет доступа к этому плану',
-              content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } }
-            },
-            '404': {
-              description: 'План дисциплины не найден',
-              content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } }
-            }
-          }
-        }
-      },
-      '/attendance/sessions/{sessionId}': {
-        get: {
-          tags: ['Посещаемость'],
-          summary: 'Получить посещаемость сессии',
-          description: 'Возвращает список студентов подгруппы с их отметками посещаемости для указанной сессии.',
-          security: [{ bearerAuth: [] }],
-          parameters: [
-            {
-              name: 'sessionId',
-              in: 'path',
-              required: true,
-              schema: { type: 'integer' },
-              description: 'ID сессии посещаемости'
-            }
-          ],
-          responses: {
-            '200': {
-              description: 'Посещаемость сессии',
-              content: {
-                'application/json': {
-                  schema: {
-                    type: 'object',
-                    properties: {
-                      success: { type: 'boolean', example: true },
-                      data: {
-                        type: 'array',
-                        items: { $ref: '#/components/schemas/SessionAttendanceItem' }
-                      }
-                    }
-                  }
-                }
-              }
-            },
-            '401': {
-              description: 'Не авторизован',
-              content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } }
-            },
-            '403': {
-              description: 'Нет доступа',
-              content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } }
-            },
-            '404': {
-              description: 'Сессия не найдена',
-              content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } }
-            }
-          }
-        }
-      },
-      '/attendance/sessions/{sessionId}/mark': {
-        post: {
-          tags: ['Посещаемость'],
-          summary: 'Отметить посещаемость',
-          description: 'Массовая отметка посещаемости студентов на сессии. Если отметка уже существует — обновляет её.',
-          security: [{ bearerAuth: [] }],
-          parameters: [
-            {
-              name: 'sessionId',
-              in: 'path',
-              required: true,
-              schema: { type: 'integer' },
-              description: 'ID сессии посещаемости'
-            }
-          ],
-          requestBody: {
-            required: true,
-            content: {
-              'application/json': {
-                schema: { $ref: '#/components/schemas/MarkAttendanceRequest' }
-              }
-            }
-          },
-          responses: {
-            '200': {
-              description: 'Отметки сохранены',
-              content: {
-                'application/json': {
-                  schema: {
-                    type: 'object',
-                    properties: {
-                      success: { type: 'boolean', example: true },
-                      data: {
-                        type: 'array',
-                        items: { $ref: '#/components/schemas/Attendance' }
-                      }
-                    }
-                  }
-                }
-              }
-            },
-            '400': {
-              description: 'Необходимо передать массив records',
-              content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } }
-            },
-            '401': {
-              description: 'Не авторизован',
-              content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } }
-            },
-            '403': {
-              description: 'Нет доступа',
-              content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } }
-            },
-            '404': {
-              description: 'Сессия не найдена',
-              content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } }
-            }
-          }
-        }
-      },
-      '/statistics/summary': {
-        get: {
-          tags: ['Статистика'],
-          summary: 'Сводка по дисциплинам',
-          description: 'Возвращает краткую сводку по каждому плану дисциплины: название, тип, группа, количество сессий, часы. Преподаватель — только свои, заведующий — все.',
-          security: [{ bearerAuth: [] }],
-          responses: {
-            '200': {
-              description: 'Сводка статистики',
-              content: {
-                'application/json': {
-                  schema: {
-                    type: 'object',
-                    properties: {
-                      success: { type: 'boolean', example: true },
-                      data: {
-                        type: 'array',
-                        items: { $ref: '#/components/schemas/StatsSummaryItem' }
-                      }
-                    }
-                  }
-                }
-              }
-            },
-            '401': {
-              description: 'Не авторизован',
-              content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } }
-            }
-          }
-        }
-      },
-      '/statistics/discipline-plan/{disciplinePlanId}': {
-        get: {
-          tags: ['Статистика'],
-          summary: 'Статистика по плану дисциплины',
-          description: 'Подробная статистика посещаемости для каждого студента по указанному плану дисциплины. Включает подсчёт по каждому статусу.',
-          security: [{ bearerAuth: [] }],
-          parameters: [
-            {
-              name: 'disciplinePlanId',
-              in: 'path',
-              required: true,
-              schema: { type: 'integer' },
-              description: 'ID плана дисциплины'
-            }
-          ],
-          responses: {
-            '200': {
-              description: 'Детальная статистика',
-              content: {
-                'application/json': {
-                  schema: {
-                    type: 'object',
-                    properties: {
-                      success: { type: 'boolean', example: true },
-                      data: { $ref: '#/components/schemas/DisciplinePlanStats' }
-                    }
-                  }
-                }
-              }
-            },
-            '401': {
-              description: 'Не авторизован',
-              content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } }
-            },
-            '403': {
-              description: 'Нет доступа (преподаватель не может видеть чужой план)',
-              content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } }
-            },
-            '404': {
-              description: 'План дисциплины не найден',
-              content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } }
-            }
-          }
-        }
-      },
-      '/statistics/student/{studentId}': {
-        get: {
-          tags: ['Статистика'],
-          summary: 'Статистика студента',
-          description: 'Посещаемость конкретного студента. Можно фильтровать по плану дисциплины.',
-          security: [{ bearerAuth: [] }],
-          parameters: [
-            {
-              name: 'studentId',
-              in: 'path',
-              required: true,
-              schema: { type: 'integer' },
-              description: 'ID студента'
-            },
-            {
-              name: 'discipline_plan_id',
-              in: 'query',
-              required: false,
-              schema: { type: 'integer' },
-              description: 'Фильтр по ID плана дисциплины'
-            }
-          ],
-          responses: {
-            '200': {
-              description: 'Статистика студента',
-              content: {
-                'application/json': {
-                  schema: {
-                    type: 'object',
-                    properties: {
-                      success: { type: 'boolean', example: true },
-                      data: { $ref: '#/components/schemas/StudentStats' }
-                    }
-                  }
-                }
-              }
-            },
-            '401': {
-              description: 'Не авторизован',
-              content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } }
-            },
-            '404': {
-              description: 'Студент не найден',
-              content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } }
-            }
-          }
+          responses: { '200': { description: 'Статусы' } }
         }
       }
-    },
-    tags: [
-      { name: 'Авторизация', description: 'Аутентификация и профиль пользователя' },
-      { name: 'Группы', description: 'Управление группами и подгруппами' },
-      { name: 'Студенты', description: 'Списки студентов' },
-      { name: 'Расписание', description: 'Расписание и планы дисциплин' },
-      { name: 'Посещаемость', description: 'Учёт посещаемости студентов' },
-      { name: 'Статистика', description: 'Статистика и аналитика посещаемости' }
-    ]
+    }
   },
   apis: []
 };
 
 const swaggerSpec = swaggerJsdoc(options);
-
 export default swaggerSpec;
