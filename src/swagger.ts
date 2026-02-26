@@ -142,6 +142,7 @@ const options: swaggerJsdoc.Options = {
             id: { type: 'integer' },
             group_id: { type: 'integer' },
             subject_name: { type: 'string' },
+            date_time: { type: 'string', format: 'date-time' },
             subgroup: { type: 'integer', nullable: true },
             academic_hours: { type: 'integer', nullable: true },
             lecturer_id: { type: 'integer' },
@@ -151,10 +152,11 @@ const options: swaggerJsdoc.Options = {
         },
         CreateLessonRequest: {
           type: 'object',
-          required: ['group_id', 'subject_name'],
+          required: ['group_id', 'subject_name', 'date_time'],
           properties: {
             group_id: { type: 'integer' },
             subject_name: { type: 'string', example: 'Программирование на Python' },
+            date_time: { type: 'string', format: 'date-time', example: '2026-03-02T09:00:00Z' },
             subgroup: { type: 'integer', description: 'null=вся группа, 1/2/3=подгруппа' },
             academic_hours: { type: 'integer' }
           }

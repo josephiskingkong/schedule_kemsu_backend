@@ -13,7 +13,7 @@ export const getLessons = async (req: AuthRequest, res: Response, next: NextFunc
     const lessons = await Lesson.findAll({
       where: { lecturer_id: req.user.id },
       include: [{ model: Group, attributes: ['id', 'name'] }],
-      order: [['created_at', 'DESC']]
+      order: [['date_time', 'DESC']]
     });
 
     res.json({ success: true, data: lessons });
@@ -46,10 +46,10 @@ export const createLesson = async (req: AuthRequest, res: Response, next: NextFu
   try {
     if (!req.user) throw new AppError('Не авторизован', 401);
 
-    const { group_id, subject_name, subgroup, academic_hours } = req.body;
+    const { group_id, subject_name, date_time, subgroup, academic_hours } = req.body;
 
-    if (!group_id || !subject_name) {
-      throw new AppError('Группа и название предмета обязательны', 400);
+    if (!group_id || !subject_name || !date_time) {
+      throw new AppError('Группа, название предмета и дата/время обязательны', 400);
     }
 
     const group = await Group.findByPk(group_id);
@@ -62,6 +62,7 @@ export const createLesson = async (req: AuthRequest, res: Response, next: NextFu
     const lesson = await Lesson.create({
       group_id,
       subject_name,
+      date_time,
       subgroup: subgroup || null,
       academic_hours: academic_hours || null,
       lecturer_id: req.user.id

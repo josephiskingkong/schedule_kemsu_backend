@@ -15,6 +15,9 @@ export default class Lesson extends Model {
   @Column({ type: DataType.STRING, allowNull: false })
   declare subject_name: string;
 
+  @Column({ type: DataType.DATE, allowNull: false })
+  declare date_time: Date;
+
   @Column({ type: DataType.INTEGER })
   declare subgroup: number;
 

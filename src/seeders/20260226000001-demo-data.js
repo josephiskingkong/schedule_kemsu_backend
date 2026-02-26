@@ -30,9 +30,9 @@ module.exports = {
     ]);
 
     await queryInterface.bulkInsert('lesson', [
-      { id: 1, group_id: 1, subject_name: 'Программирование на Python', subgroup: null, academic_hours: 72, lecturer_id: 1, created_at: now, updated_at: now },
-      { id: 2, group_id: 1, subject_name: 'Базы данных', subgroup: 1, academic_hours: 36, lecturer_id: 1, created_at: now, updated_at: now },
-      { id: 3, group_id: 2, subject_name: 'Математический анализ', subgroup: null, academic_hours: null, lecturer_id: 2, created_at: now, updated_at: now }
+      { id: 1, group_id: 1, subject_name: 'Программирование на Python', date_time: new Date('2026-03-02T09:00:00'), subgroup: null, academic_hours: 72, lecturer_id: 1, created_at: now, updated_at: now },
+      { id: 2, group_id: 1, subject_name: 'Базы данных', date_time: new Date('2026-03-02T10:45:00'), subgroup: 1, academic_hours: 36, lecturer_id: 1, created_at: now, updated_at: now },
+      { id: 3, group_id: 2, subject_name: 'Математический анализ', date_time: new Date('2026-03-03T13:00:00'), subgroup: null, academic_hours: null, lecturer_id: 2, created_at: now, updated_at: now }
     ]);
 
     await queryInterface.bulkInsert('attendance', [

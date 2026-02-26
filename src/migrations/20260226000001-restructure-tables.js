@@ -68,6 +68,7 @@ module.exports = {
         onDelete: 'CASCADE'
       },
       subject_name: { type: Sequelize.STRING, allowNull: false },
+      date_time: { type: Sequelize.DATE, allowNull: false },
       subgroup: { type: Sequelize.INTEGER },
       academic_hours: { type: Sequelize.INTEGER },
       lecturer_id: {
