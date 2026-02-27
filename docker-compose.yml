@@ -17,7 +17,7 @@ services:
       retries: 10
 
   migrate:
-    build: .
+    image: ghcr.io/josephiskingkong/schedule_kemsu_backend:latest
     command: >
       sh -c "npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all"
     environment:
@@ -32,7 +32,7 @@ services:
         condition: service_healthy
 
   app:
-    build: .
+    image: ghcr.io/josephiskingkong/schedule_kemsu_backend:latest
     restart: unless-stopped
     ports:
       - "3000:3000"
