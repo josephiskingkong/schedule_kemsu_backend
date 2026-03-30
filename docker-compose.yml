@@ -35,9 +35,9 @@ services:
     image: ghcr.io/josephiskingkong/schedule_kemsu_backend:latest
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "3689:3689"
     environment:
-      PORT: 3000
+      PORT: 3689
       DB_HOST: db
       DB_PORT: 5432
       DB_NAME: schedule_kemsu

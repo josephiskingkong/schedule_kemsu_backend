@@ -24,6 +24,6 @@ COPY --from=builder /app/src/seeders ./src/seeders
 COPY --from=builder /app/src/config/database.js ./src/config/database.js
 COPY .sequelizerc ./
 
-EXPOSE 3000
+EXPOSE 3689
 
 CMD ["node", "dist/server.js"]
